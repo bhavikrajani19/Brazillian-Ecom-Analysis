@@ -1,0 +1,35 @@
+most order from city:- select customer_city,price from customers c join orders o on c.customer_id = o.customer_id
+ join order_items oi on o.order_id = oi.order_id order by price DESC limit 10;
+ 
+for avg price by city order -- select customer_city,avg(price) from customers c join orders o on c.customer_id = o.customer_id
+ join order_items oi on o.order_id = oi.order_id group by customer_city limit 2 ;
+
+total order from products -- SELECT 
+    ct.product_category_name_english AS category_name, 
+    COUNT(o.order_id) AS total_orders
+FROM order_items o 
+JOIN products p ON o.product_id = p.product_id 
+JOIN category_translation ct ON p.product_category_name = ct.product_category_name
+GROUP BY ct.product_category_name_english 
+ORDER BY total_orders DESC 
+LIMIT 5;
+
+order time taken avg in ccities :_ 
+select avg(DATEDIFF( o.order_delivered_customer_date,o.order_purchase_timestamp)) as avg_time_taken_to_deliver,
+customer_city
+from customers c join orders o on c.customer_id = o.customer_id 
+where o.order_status = 'delivered'
+group by customer_city  order by avg_time_taken_to_deliver DESC limit 10 ;
+
+avg revieww in category -- SELECT 
+    ct.product_category_name_english AS category,
+    ROUND(AVG(r.review_score), 2) AS avg_score
+FROM category_translation ct
+JOIN products p ON ct.product_category_name = p.product_category_name
+JOIN order_items oi ON p.product_id = oi.product_id -- Bridge Table
+JOIN reviews r ON oi.order_id = r.order_id
+GROUP BY ct.product_category_name_english
+ORDER BY avg_score ASC 
+LIMIT 5;
+ 
+
